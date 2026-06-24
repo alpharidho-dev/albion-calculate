@@ -9,7 +9,7 @@ export function renderDashboard() {
 
   const prefs = getPreferences();
   const isPremium = prefs.isPremium;
-  const taxValue = isPremium ? 'Buy: 2.5% / Sell: 6.5%' : 'Buy: 2.5% / Sell: 10.5%';
+  const sellTax = isPremium ? '6.5%' : '10.5%';
   const taxSub = isPremium ? 'Setup Fee 2.5% + Sales Tax 4% (Premium)' : 'Setup Fee 2.5% + Sales Tax 8% (Normal)';
   const focusValue = isPremium ? '10,000' : '0';
   const focusSub = isPremium ? 'Premium Active' : 'Requires Premium';
@@ -42,8 +42,17 @@ export function renderDashboard() {
             <div class="result-sub">${serverRegion}</div>
           </div>
           <div class="result-card">
-            <div class="result-label">Market Tax</div>
-            <div class="result-value" style="color: var(--text-primary)">${taxValue}</div>
+            <div class="result-label" style="margin-bottom:var(--space-xs)">Market Tax</div>
+            <div style="display:flex; align-items:center; gap:var(--space-md); margin:var(--space-xs) 0">
+              <div>
+                <span style="font-size:0.7rem; color:var(--text-secondary); display:block; text-transform:uppercase; font-weight:600">Buy Order</span>
+                <span class="gold font-mono" style="font-size:1.25rem; font-weight:700">2.5%</span>
+              </div>
+              <div style="border-left:1px solid rgba(255,215,0,0.15); padding-left:var(--space-md)">
+                <span style="font-size:0.7rem; color:var(--text-secondary); display:block; text-transform:uppercase; font-weight:600">Sell Order</span>
+                <span class="gold font-mono" style="font-size:1.25rem; font-weight:700">${sellTax}</span>
+              </div>
+            </div>
             <div class="result-sub">${taxSub}</div>
           </div>
           <div class="result-card">
