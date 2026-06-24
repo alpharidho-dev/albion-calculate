@@ -6,7 +6,7 @@ import { CITIES, CITY_NAMES } from '../utils/constants.js';
 import { calcEffectiveRRR, calcCraftingCost, calcMarketProfit, calcBreakEven, calcFocusEfficiency } from '../utils/calculations.js';
 import { formatSilverFull, formatPercent, profitClass, showToast } from '../utils/formatters.js';
 import { fetchPrices } from '../api/albionData.js';
-import { searchItems } from '../api/items.js';
+import { getPreferences } from '../supabase.js';
 
 export function renderCrafting() {
   const cityOptions = CITY_NAMES.map(c =>
@@ -21,37 +21,21 @@ export function renderCrafting() {
       <div class="page-header">
         <div>
           <h1 class="heading-xl">🔨 <span class="gradient-text">Crafting Profit Calculator</span></h1>
-          <p class="page-subtitle">Hitung profit crafting dengan resource return rate, city bonus, focus, dan pajak market.</p>
+          <p class="page-subtitle">Hitung profit crafting dengan RRR, city bonus, focus, dan pajak market.</p>
         </div>
       </div>
 
       <div class="calc-layout">
         <!-- Input Side -->
         <div class="calc-inputs">
-          <!-- Item Selection -->
-          <div class="input-panel">
-            <div class="input-panel-title">📦 Item Selection</div>
-            <div class="form-group">
-              <label class="label">Search Item</label>
-              <div class="item-search-wrapper">
-                <span class="item-search-icon">🔍</span>
-                <input type="text" id="craft-item-search" class="item-search-input" placeholder="Type item name (e.g. T4 Bag)..." />
-                <div id="craft-search-results" class="item-search-results"></div>
-              </div>
-            </div>
-            <div id="craft-selected-item" style="margin-top: var(--space-sm);display:none;">
-              <div class="badge badge-gold" id="craft-selected-badge"></div>
-            </div>
-          </div>
-
           <!-- Materials -->
           <div class="input-panel">
             <div class="input-panel-title">🧱 Materials</div>
             <div id="craft-materials-list">
               <div class="form-row">
                 <div class="form-group">
-                  <label class="label">Material 1</label>
-                  <input type="text" class="input" id="craft-mat1-name" placeholder="Material name" />
+                  <label class="label">Material 1 (Item ID)</label>
+                  <input type="text" class="input" id="craft-mat1-name" placeholder="e.g. T4_LEATHER" />
                 </div>
                 <div class="form-group">
                   <label class="label">Price per unit</label>
@@ -65,7 +49,7 @@ export function renderCrafting() {
               <div class="form-row" style="margin-top:var(--space-sm)">
                 <div class="form-group">
                   <label class="label">Material 2 (optional)</label>
-                  <input type="text" class="input" id="craft-mat2-name" placeholder="Material name" />
+                  <input type="text" class="input" id="craft-mat2-name" placeholder="e.g. T4_METALBAR" />
                 </div>
                 <div class="form-group">
                   <label class="label">Price per unit</label>
@@ -116,10 +100,6 @@ export function renderCrafting() {
               <div class="toggle-wrapper">
                 <input type="checkbox" class="toggle" id="craft-use-focus" />
                 <label class="toggle-label" for="craft-use-focus">Use Focus</label>
-              </div>
-              <div class="toggle-wrapper">
-                <input type="checkbox" class="toggle" id="craft-premium" checked />
-                <label class="toggle-label" for="craft-premium">Premium</label>
               </div>
             </div>
           </div>
@@ -208,7 +188,6 @@ export function renderCrafting() {
 
 export function initCrafting() {
   let selectedCity = null;
-  let selectedItem = null;
 
   // City selector
   document.querySelectorAll('#craft-city-selector .city-btn').forEach(btn => {
@@ -219,57 +198,6 @@ export function initCrafting() {
     });
   });
 
-  // Item search
-  const searchInput = document.getElementById('craft-item-search');
-  const resultsDiv = document.getElementById('craft-search-results');
-
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      const results = searchItems(e.target.value, 10);
-      if (results.length > 0) {
-        resultsDiv.innerHTML = results.map(item => `
-          <div class="item-result" data-id="${item.id}" data-name="${item.name}">
-            <span class="item-result-tier">T${item.tier}</span>
-            <span class="item-result-name">${item.name}</span>
-            <span class="item-result-category">${item.category}</span>
-          </div>
-        `).join('');
-        resultsDiv.classList.add('open');
-
-        resultsDiv.querySelectorAll('.item-result').forEach(el => {
-          el.addEventListener('click', () => {
-            selectedItem = { id: el.dataset.id, name: el.dataset.name };
-            searchInput.value = el.dataset.name;
-            resultsDiv.classList.remove('open');
-            document.getElementById('craft-selected-badge').textContent = selectedItem.name;
-            document.getElementById('craft-selected-item').style.display = 'block';
-
-            // Auto-fill materials if item has material data
-            const item = results.find(r => r.id === el.dataset.id);
-            if (item && item.materials) {
-              const m1 = item.materials[0];
-              if (m1) {
-                document.getElementById('craft-mat1-name').value = m1.id;
-                document.getElementById('craft-mat1-qty').value = m1.qty;
-              }
-              if (item.materials[1]) {
-                const m2 = item.materials[1];
-                document.getElementById('craft-mat2-name').value = m2.id;
-                document.getElementById('craft-mat2-qty').value = m2.qty;
-              }
-            }
-          });
-        });
-      } else {
-        resultsDiv.classList.remove('open');
-      }
-    });
-
-    searchInput.addEventListener('blur', () => {
-      setTimeout(() => resultsDiv.classList.remove('open'), 200);
-    });
-  }
-
   // Fetch prices button
   const fetchBtn = document.getElementById('craft-fetch-prices');
   if (fetchBtn) {
@@ -277,8 +205,6 @@ export function initCrafting() {
       const mat1Id = document.getElementById('craft-mat1-name').value.trim();
       const mat2Id = document.getElementById('craft-mat2-name').value.trim();
       const itemIds = [mat1Id, mat2Id].filter(Boolean);
-
-      if (selectedItem) itemIds.push(selectedItem.id);
 
       if (itemIds.length === 0) {
         showToast('Enter material IDs first', 'error');
@@ -295,9 +221,6 @@ export function initCrafting() {
           }
           if (p.item_id === mat2Id && p.sell_price_min > 0) {
             document.getElementById('craft-mat2-price').value = p.sell_price_min;
-          }
-          if (selectedItem && p.item_id === selectedItem.id && p.sell_price_min > 0) {
-            document.getElementById('craft-sell-price').value = p.sell_price_min;
           }
         }
         showToast('Prices fetched!', 'success');
@@ -321,7 +244,7 @@ export function initCrafting() {
       const stationFee = Number(document.getElementById('craft-station-fee').value) || 0;
       const specLevel = Number(document.getElementById('craft-spec-level').value) || 0;
       const useFocus = document.getElementById('craft-use-focus').checked;
-      const isPremium = document.getElementById('craft-premium').checked;
+      const isPremium = getPreferences().isPremium;
 
       // Determine city bonus
       const isBonusCity = selectedCity ? !!CITIES[selectedCity]?.craftingBonus?.length : false;
