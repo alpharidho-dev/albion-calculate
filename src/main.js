@@ -5,7 +5,7 @@
 import { route, initRouter } from './router.js';
 import { getPreferences, saveLocalPrefs } from './supabase.js';
 import { setServer, getServer } from './api/albionData.js';
-import { renderDashboard } from './pages/dashboard.js';
+import { renderDashboard, initDashboard } from './pages/dashboard.js';
 import { renderCrafting, initCrafting } from './pages/crafting.js';
 import { renderRefining, initRefining } from './pages/refining.js';
 import { renderGathering, initGathering } from './pages/gathering.js';
@@ -58,6 +58,7 @@ function initApp() {
   // Register routes
   route('/', async () => {
     const html = renderDashboard();
+    setTimeout(() => initDashboard(), 0);
     return html;
   });
 
