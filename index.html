@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AlbionCalculate — Albion Online Economy Calculator Suite</title>
+  <meta name="description" content="Complete Albion Online profit calculator: crafting, refining, gathering, market flipping, farming, labourers, black market, transmutation. Real-time market data." />
+  <meta name="keywords" content="Albion Online, calculator, crafting, refining, profit, market, gathering, economy" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/styles/index.css" />
+  <link rel="stylesheet" href="/src/styles/components.css" />
+  <link rel="stylesheet" href="/src/styles/pages.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">⚔️</span>
+          <span class="logo-text">Albion<span class="logo-highlight">Calc</span></span>
+        </div>
+        <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar">
+          <span class="toggle-icon">☰</span>
+        </button>
+      </div>
+      <nav class="sidebar-nav" id="main-nav">
+        <a href="#/" class="nav-item active" data-page="dashboard">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <div class="nav-divider"><span>Calculators</span></div>
+        <a href="#/crafting" class="nav-item" data-page="crafting">
+          <span class="nav-icon">🔨</span>
+          <span class="nav-label">Crafting</span>
+        </a>
+        <a href="#/refining" class="nav-item" data-page="refining">
+          <span class="nav-icon">⚗️</span>
+          <span class="nav-label">Refining</span>
+        </a>
+        <a href="#/gathering" class="nav-item" data-page="gathering">
+          <span class="nav-icon">⛏️</span>
+          <span class="nav-label">Gathering</span>
+        </a>
+        <a href="#/flipping" class="nav-item" data-page="flipping">
+          <span class="nav-icon">📈</span>
+          <span class="nav-label">Market Flip</span>
+        </a>
+        <a href="#/farming" class="nav-item" data-page="farming">
+          <span class="nav-icon">🌱</span>
+          <span class="nav-label">Farming</span>
+        </a>
+        <a href="#/labourers" class="nav-item" data-page="labourers">
+          <span class="nav-icon">👷</span>
+          <span class="nav-label">Labourers</span>
+        </a>
+        <a href="#/blackmarket" class="nav-item" data-page="blackmarket">
+          <span class="nav-icon">🏴</span>
+          <span class="nav-label">Black Market</span>
+        </a>
+        <a href="#/transmutation" class="nav-item" data-page="transmutation">
+          <span class="nav-icon">🔁</span>
+          <span class="nav-label">Transmute</span>
+        </a>
+        <div class="nav-divider"><span>Tools</span></div>
+        <a href="#/comparison" class="nav-item" data-page="comparison">
+          <span class="nav-icon">📊</span>
+          <span class="nav-label">Compare</span>
+        </a>
+        <a href="#/tools" class="nav-item" data-page="tools">
+          <span class="nav-icon">🗺️</span>
+          <span class="nav-label">Tools</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="server-badge" id="server-badge">
+          <span class="server-dot"></span>
+          <span class="server-label">West Server</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="main-content" class="main-content">
+      <div id="page-container" class="page-container">
+        <!-- Pages render here -->
+      </div>
+    </main>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
