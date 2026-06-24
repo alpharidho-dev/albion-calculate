@@ -9,8 +9,8 @@ export function renderDashboard() {
 
   const prefs = getPreferences();
   const isPremium = prefs.isPremium;
-  const taxValue = isPremium ? '6.5%' : '10.5%';
-  const taxSub = isPremium ? 'Buy Order: 2.5% | Sell Order: 6.5% (Premium)' : 'Buy Order: 2.5% | Sell Order: 10.5% (Non-Premium)';
+  const taxValue = isPremium ? 'Buy: 2.5% / Sell: 6.5%' : 'Buy: 2.5% / Sell: 10.5%';
+  const taxSub = isPremium ? 'Setup Fee 2.5% + Sales Tax 4% (Premium)' : 'Setup Fee 2.5% + Sales Tax 8% (Normal)';
   const focusValue = isPremium ? '10,000' : '0';
   const focusSub = isPremium ? 'Premium Active' : 'Requires Premium';
 
