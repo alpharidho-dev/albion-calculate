@@ -1,9 +1,18 @@
 import { getServer } from '../api/albionData.js';
+import { getPreferences, saveLocalPrefs } from '../supabase.js';
+import { showToast } from '../utils/formatters.js';
 
 export function renderDashboard() {
   const server = getServer();
   const serverName = server.key === 'east' ? 'East' : (server.key === 'europe' ? 'Europe' : 'West');
   const serverRegion = server.key === 'east' ? 'Asia' : (server.key === 'europe' ? 'Europe' : 'Americas');
+
+  const prefs = getPreferences();
+  const isPremium = prefs.isPremium;
+  const taxValue = isPremium ? '6.5%' : '10.5%';
+  const taxSub = isPremium ? '2.5% setup + 4% sales (Premium)' : '2.5% setup + 8% sales (Non-Premium)';
+  const focusValue = isPremium ? '10,000' : '0';
+  const focusSub = isPremium ? 'Premium Active (Click to toggle)' : 'Requires Premium (Click to toggle)';
 
   return `
     <div class="calc-page">
@@ -26,15 +35,15 @@ export function renderDashboard() {
             <div class="result-value gold">${serverName}</div>
             <div class="result-sub">${serverRegion}</div>
           </div>
-          <div class="result-card">
+          <div class="result-card" id="dash-tax-card" style="cursor:pointer">
             <div class="result-label">Market Tax</div>
-            <div class="result-value" style="color: var(--text-primary)">10.5%</div>
-            <div class="result-sub">2.5% setup + 8% sales</div>
+            <div class="result-value" style="color: var(--text-primary)">${taxValue}</div>
+            <div class="result-sub">${taxSub}</div>
           </div>
-          <div class="result-card">
+          <div class="result-card" id="dash-focus-card" style="cursor:pointer">
             <div class="result-label">Focus/Day</div>
-            <div class="result-value" style="color: var(--accent-blue)">10,000</div>
-            <div class="result-sub">Premium required</div>
+            <div class="result-value" style="color: var(--accent-blue)">${focusValue}</div>
+            <div class="result-sub">${focusSub}</div>
           </div>
           <div class="result-card">
             <div class="result-label">Calculators</div>
@@ -160,4 +169,24 @@ export function renderDashboard() {
         </div>
       </div>
     </div>`;
+}
+
+export function initDashboard() {
+  const taxCard = document.getElementById('dash-tax-card');
+  const focusCard = document.getElementById('dash-focus-card');
+
+  const togglePremium = () => {
+    const prefs = getPreferences();
+    const newPremium = !prefs.isPremium;
+    const updated = { ...prefs, isPremium: newPremium };
+    saveLocalPrefs(updated);
+
+    showToast(`Status Premium diubah ke: ${newPremium ? 'AKTIF (Pajak 6.5%)' : 'NON-AKTIF (Pajak 10.5%)'}`);
+    
+    // Refresh current page to apply
+    window.dispatchEvent(new Event('hashchange'));
+  };
+
+  taxCard?.addEventListener('click', togglePremium);
+  focusCard?.addEventListener('click', togglePremium);
 }
