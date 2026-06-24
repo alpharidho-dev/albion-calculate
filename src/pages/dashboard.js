@@ -129,8 +129,12 @@ export function renderDashboard() {
 
       <!-- City Bonuses Reference -->
       <div class="section" style="margin-top: var(--space-xl)">
-        <div class="section-title">
-          <h2 class="heading-md">🏙️ City Refining Bonuses</h2>
+        <div class="section-title" style="display:flex; flex-direction:column; align-items:flex-start; gap:var(--space-xs); margin-bottom:var(--space-md)">
+          <h2 class="heading-md" style="margin-bottom:0">🏙️ City Refining Bonuses</h2>
+          <p style="font-size:0.85rem; color:var(--text-secondary); margin:0; line-height:1.4">
+            Refining di kota yang sesuai memberikan RRR sebesar <strong>36.7%</strong> (tanpa Focus) / <strong>53.9%</strong> (dengan Focus). 
+            Jika di kota lain <strong>(Normal/Tanpa Bonus)</strong>, RRR hanya <strong>15.2%</strong> (tanpa Focus) / <strong>43.5%</strong> (dengan Focus).
+          </p>
         </div>
         <div class="table-wrapper">
           <table class="table">
