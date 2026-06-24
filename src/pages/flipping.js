@@ -131,6 +131,23 @@ export function renderFlipping() {
                 <div class="empty-state-text">Select an item and fetch prices to see arbitrage opportunities</div>
               </div>
             </div>
+          <!-- Help / Info section -->
+          <div class="result-card" style="margin-top:var(--space-md)">
+            <div class="result-label">💡 Info Pajak & Biaya Market (Market Tax Rules)</div>
+            <div class="breakdown-list" style="margin-top:var(--space-sm); font-size:0.85rem; line-height:1.4">
+              <div style="margin-bottom:var(--space-xs)">
+                🟢 <strong>Buy Order (Pesan Beli)</strong>: Dikenakan <strong>Setup Fee 2.5%</strong> di muka saat memasang order. Biaya ini tidak kembali meskipun order dibatalkan (cancel).
+              </div>
+              <div style="margin-bottom:var(--space-xs)">
+                🟡 <strong>Sell Order (Pesan Jual)</strong>: Dikenakan <strong>Setup Fee 2.5%</strong> saat memasang order + <strong>Sales Tax (4% Premium / 8% Normal)</strong> setelah barang laku terjual.
+              </div>
+              <div style="margin-bottom:var(--space-xs)">
+                🔵 <strong>Instant Sell (Jual Instan)</strong>: Hanya dikenakan <strong>Sales Tax (4% Premium / 8% Normal)</strong> langsung. Bebas dari Setup Fee 2.5%.
+              </div>
+              <div>
+                ⚪ <strong>Instant Buy (Beli Instan)</strong>: Tidak ada biaya tambahan bagi pembeli (harga tertera adalah harga bersih).
+              </div>
+            </div>
           </div>
         </div>
       </div>
