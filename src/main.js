@@ -51,11 +51,7 @@ function initApp() {
       showToast(`Server diubah ke: ${getServer().label}`);
       
       // Auto-reload the page to fetch correct server prices
-      const currentHash = window.location.hash;
-      window.location.hash = '#/';
-      setTimeout(() => {
-        window.location.hash = currentHash;
-      }, 50);
+      window.dispatchEvent(new Event('hashchange'));
     });
   }
 

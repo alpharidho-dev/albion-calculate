@@ -1,8 +1,10 @@
-/**
- * AlbionCalculate — Dashboard Page
- */
+import { getServer } from '../api/albionData.js';
 
 export function renderDashboard() {
+  const server = getServer();
+  const serverName = server.key === 'east' ? 'East' : (server.key === 'europe' ? 'Europe' : 'West');
+  const serverRegion = server.key === 'east' ? 'Asia' : (server.key === 'europe' ? 'Europe' : 'Americas');
+
   return `
     <div class="calc-page">
       <!-- Hero Section -->
@@ -21,8 +23,8 @@ export function renderDashboard() {
         <div class="dashboard-stats">
           <div class="result-card">
             <div class="result-label">Server</div>
-            <div class="result-value gold">West</div>
-            <div class="result-sub">Americas</div>
+            <div class="result-value gold">${serverName}</div>
+            <div class="result-sub">${serverRegion}</div>
           </div>
           <div class="result-card">
             <div class="result-label">Market Tax</div>
