@@ -12,7 +12,7 @@ export function renderDashboard() {
   const taxValue = isPremium ? '6.5%' : '10.5%';
   const taxSub = isPremium ? '2.5% setup + 4% sales (Premium)' : '2.5% setup + 8% sales (Non-Premium)';
   const focusValue = isPremium ? '10,000' : '0';
-  const focusSub = isPremium ? 'Premium Active (Click to toggle)' : 'Requires Premium (Click to toggle)';
+  const focusSub = isPremium ? 'Premium Active' : 'Requires Premium';
 
   return `
     <div class="calc-page">
@@ -26,8 +26,14 @@ export function renderDashboard() {
 
       <!-- Quick Stats -->
       <div class="section" style="margin-bottom: var(--space-xl)">
-        <div class="section-title">
-          <h2 class="heading-md">📊 Quick Overview</h2>
+        <div class="section-title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-sm)">
+          <h2 class="heading-md" style="margin-bottom:0">📊 Quick Overview</h2>
+          <div class="premium-toggle-container" style="display:flex; align-items:center; gap:var(--space-xs)">
+            <span style="font-size:0.9rem; font-weight:600; color:var(--text-secondary)">👑 Premium:</span>
+            <button class="btn btn-sm ${isPremium ? 'btn-primary' : 'btn-secondary'}" id="dash-premium-toggle">
+              ${isPremium ? '🟢 ACTIVE' : '🔴 INACTIVE'}
+            </button>
+          </div>
         </div>
         <div class="dashboard-stats">
           <div class="result-card">
@@ -35,12 +41,12 @@ export function renderDashboard() {
             <div class="result-value gold">${serverName}</div>
             <div class="result-sub">${serverRegion}</div>
           </div>
-          <div class="result-card" id="dash-tax-card" style="cursor:pointer">
+          <div class="result-card">
             <div class="result-label">Market Tax</div>
             <div class="result-value" style="color: var(--text-primary)">${taxValue}</div>
             <div class="result-sub">${taxSub}</div>
           </div>
-          <div class="result-card" id="dash-focus-card" style="cursor:pointer">
+          <div class="result-card">
             <div class="result-label">Focus/Day</div>
             <div class="result-value" style="color: var(--accent-blue)">${focusValue}</div>
             <div class="result-sub">${focusSub}</div>
@@ -172,10 +178,9 @@ export function renderDashboard() {
 }
 
 export function initDashboard() {
-  const taxCard = document.getElementById('dash-tax-card');
-  const focusCard = document.getElementById('dash-focus-card');
+  const toggleBtn = document.getElementById('dash-premium-toggle');
 
-  const togglePremium = () => {
+  toggleBtn?.addEventListener('click', () => {
     const prefs = getPreferences();
     const newPremium = !prefs.isPremium;
     const updated = { ...prefs, isPremium: newPremium };
@@ -183,10 +188,7 @@ export function initDashboard() {
 
     showToast(`Status Premium diubah ke: ${newPremium ? 'AKTIF (Pajak 6.5%)' : 'NON-AKTIF (Pajak 10.5%)'}`);
     
-    // Refresh current page to apply
+    // Refresh page
     window.dispatchEvent(new Event('hashchange'));
-  };
-
-  taxCard?.addEventListener('click', togglePremium);
-  focusCard?.addEventListener('click', togglePremium);
+  });
 }
